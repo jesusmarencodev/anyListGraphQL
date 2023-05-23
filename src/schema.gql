@@ -11,7 +11,7 @@ type Item {
 
 type Query {
   items: [Item!]!
-  item(id: String!): Item!
+  item(id: ID!): Item!
 }
 
 type Mutation {
@@ -32,5 +32,5 @@ input UpdateItemInput {
   name: String
   quantity: Float
   quantityUnits: String
-  id: Int!
+  id: String!
 }
