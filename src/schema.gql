@@ -3,13 +3,15 @@
 # ------------------------------------------------------
 
 type Item {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
+  name: String!
+  quantity: Float!
+  quantityUnits: String
 }
 
 type Query {
   items: [Item!]!
-  item(id: Int!): Item!
+  item(id: String!): Item!
 }
 
 type Mutation {
@@ -19,12 +21,16 @@ type Mutation {
 }
 
 input CreateItemInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  """Product name"""
+  name: String!
+  quantity: Float!
+  quantityUnits: String
 }
 
 input UpdateItemInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  """Product name"""
+  name: String
+  quantity: Float
+  quantityUnits: String
   id: Int!
 }
