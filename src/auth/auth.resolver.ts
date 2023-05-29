@@ -1,7 +1,11 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
 import { AuthResponse } from './types/auth-response.type';
 import { SigningInput, SignupInput } from './dto/inputs';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from '../users/entities/user.entity';
 
 @Resolver()
 export class AuthResolver {
@@ -21,10 +25,11 @@ export class AuthResolver {
     return this.authService.login(signingInput);
   }
 
-  /*   @Query(  , {name:'revalidate'})
+  @Query(() => AuthResponse, { name: 'revalidate' })
+  @UseGuards(JwtAuthGuard)
   revalidateToken(
-
-  ):Promise<void>{
-    return this.authService.revalidateToken();
-  }  */
+    @CurrentUser(/**[ ValidRoles.admin ]*/) user: User,
+  ): AuthResponse {
+    return this.authService.revalidateToken(user);
+  }
 }

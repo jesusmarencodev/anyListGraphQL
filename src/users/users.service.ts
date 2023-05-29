@@ -43,6 +43,15 @@ export class UsersService {
     }
   }
 
+  async findById(id: string): Promise<User> {
+    try {
+      const user = await this.usersRepository.findOneByOrFail({ id });
+      return user;
+    } catch (error) {
+      throw new NotFoundException(`${id} not fount`);
+    }
+  }
+
   blockUser(id: string): Promise<User> {
     return null;
   }
