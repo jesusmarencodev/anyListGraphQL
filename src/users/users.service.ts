@@ -33,7 +33,13 @@ export class UsersService {
   }
 
   async findAll(roles: ValidRoles[]): Promise<User[]> {
-    if (!roles.length) return this.usersRepository.find();
+    if (!roles.length)
+      return this.usersRepository.find(/* {
+        no es necesario porque en la entidad esta el atributo lazy
+        relations: {
+          lastUpdateBy: true,
+        },
+      } */);
 
     return this.usersRepository
       .createQueryBuilder()
@@ -59,8 +65,12 @@ export class UsersService {
     }
   }
 
-  blockUser(id: string): Promise<User> {
-    return null;
+  async blockUser(id: string, user: User): Promise<User> {
+    const userToBlock = await this.findById(id);
+    userToBlock.isActive = false;
+    userToBlock.lastUpdateBy = user;
+
+    return await this.usersRepository.save(userToBlock);
   }
 
   private handlerDBErrors(error: any): never {

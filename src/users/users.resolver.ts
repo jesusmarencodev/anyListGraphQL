@@ -28,8 +28,11 @@ export class UsersResolver {
     return this.usersService.findById(id);
   }
 
-  @Mutation(() => User)
-  async removeUser(@Args('id', { type: () => ID }) id: string): Promise<User> {
-    return this.usersService.blockUser(id);
+  @Mutation(() => User, { name: 'blockUser' })
+  async blockUser(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string,
+    @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) user: User,
+  ): Promise<User> {
+    return this.usersService.blockUser(id, user);
   }
 }

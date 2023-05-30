@@ -15,6 +15,7 @@ type User {
   email: String!
   roles: [String!]!
   isActive: Boolean!
+  lastUpdateBy: User
 }
 
 type AuthResponse {
@@ -40,7 +41,7 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
-  removeUser(id: ID!): User!
+  blockUser(id: ID!): User!
   signup(signupInput: SignupInput!): AuthResponse!
   signing(signingInput: SigningInput!): AuthResponse!
 }
