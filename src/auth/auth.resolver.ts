@@ -7,7 +7,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../users/entities/user.entity';
 
-@Resolver()
+@Resolver(() => AuthResponse)
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
@@ -28,7 +28,7 @@ export class AuthResolver {
   @Query(() => AuthResponse, { name: 'revalidate' })
   @UseGuards(JwtAuthGuard)
   revalidateToken(
-    @CurrentUser(/**[ ValidRoles.admin ]*/) user: User,
+    @CurrentUser(/*[ValidRoles.admin]*/) user: User,
   ): AuthResponse {
     return this.authService.revalidateToken(user);
   }
