@@ -17,11 +17,7 @@ export const CurrentUser = createParamDecorator(
     if (!user) {
       throw new InternalServerErrorException(`No user inside the request`);
     }
-    console.log({ roles });
     if (roles.length === 0) return user;
-
-    console.log(user.roles);
-
     for (const role of user.roles) {
       if (roles.includes(role as ValidRoles)) {
         return user;

@@ -8,16 +8,37 @@ import { ItemsModule } from './items/items.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+
+    GraphQLModule.forRootAsync({
+      driver: ApolloDriver,
+      imports: [AuthModule],
+      inject: [JwtService],
+      //cargar graphq modo asincrono para proteger querys y mutations
+      useFactory: async (jwtService: JwtService) => ({
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        playground: false,
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        /*         context({ req }) {
+          const token = req.headers.authorization?.replace('Bearer ', '');
+          if (!token) throw new Error('Token needed');
+          const payload = jwtService.decode(token);
+          if (!payload) throw new Error('Token needed');
+        }, */
+      }),
+    }),
+
+    /* cargar graphql sincronamiente
+      GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
-    }),
+    }), */
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
