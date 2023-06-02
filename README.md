@@ -31,3 +31,5 @@ yarn start:dev
 ```
   localhost:3000/graphql
 ```
+
+6. Ejecutar la __"mutation"__  executeSeed para llenar la db con informacion
