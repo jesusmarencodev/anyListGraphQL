@@ -12,6 +12,7 @@ import { SignupInput } from '../auth/dto/inputs/signup.input';
 import { NotFoundException } from '@nestjs/common';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { UpdateUserInput } from './dto/update-user.input';
+import { PaginationArgs, SearchArgs } from '../common/dto/args';
 
 @Injectable()
 export class UsersService {
@@ -33,17 +34,28 @@ export class UsersService {
     }
   }
 
-  async findAll(roles: ValidRoles[]): Promise<User[]> {
-    if (!roles.length)
-      return this.usersRepository.find(/* {
-        no es necesario porque en la entidad esta el atributo lazy
-        relations: {
-          lastUpdateBy: true,
-        },
-      } */);
+  async findAll(
+    roles: ValidRoles[],
+    paginationArgs: PaginationArgs,
+    searchArgs: SearchArgs,
+  ): Promise<User[]> {
+    const { limit, offset } = paginationArgs;
+    const { search } = searchArgs;
 
-    return this.usersRepository
+    const queryBuilder = this.usersRepository
       .createQueryBuilder()
+      .take(limit)
+      .skip(offset);
+
+    if (search) {
+      queryBuilder.andWhere('LOWER(full_name) like :full_name', {
+        full_name: `%${search.toLowerCase()}%`,
+      });
+    }
+
+    if (!roles.length) return queryBuilder.getMany();
+
+    return queryBuilder
       .andWhere('ARRAY[roles] && ARRAY[:...roles]')
       .setParameter('roles', roles)
       .getMany();

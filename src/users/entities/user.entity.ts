@@ -17,7 +17,7 @@ export class User {
   @Field(() => ID)
   id: string;
 
-  @Column()
+  @Column({ name: 'full_name' })
   @Field(() => String)
   fullName: string;
 
@@ -40,6 +40,7 @@ export class User {
   @Column({
     type: 'boolean',
     default: true,
+    name: 'is_active',
   })
   @Field(() => Boolean)
   isActive: boolean;
@@ -53,6 +54,6 @@ export class User {
   lastUpdateBy?: User;
 
   @OneToMany(() => Item, (item) => item.user, { lazy: true })
-  @Field(() => [Item])
+  // @Field(() => [Item])
   items: Item[];
 }
