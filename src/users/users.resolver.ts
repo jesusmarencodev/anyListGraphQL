@@ -1,4 +1,13 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ID,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { ValidRolesArgs } from './dto/args/roles.arg';
@@ -7,11 +16,15 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { ValidRoles } from '../auth/enums/valid-roles.enum';
 import { UpdateUserInput } from './dto/update-user.input';
+import { ItemsService } from '../items/items.service';
 
 @Resolver(() => User)
 @UseGuards(JwtAuthGuard)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly itemService: ItemsService,
+  ) {}
 
   @Query(() => [User], { name: 'users' })
   async findAll(
@@ -47,5 +60,13 @@ export class UsersResolver {
     @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) user: User,
   ): Promise<User> {
     return this.usersService.blockUser(id, user);
+  }
+
+  @ResolveField(() => Int, { name: 'itemCount' })
+  async itemCount(
+    @CurrentUser([ValidRoles.admin, ValidRoles.superUser]) adminUser: User,
+    @Parent() user: User,
+  ): Promise<number> {
+    return this.itemService.itemCountByUser(user);
   }
 }

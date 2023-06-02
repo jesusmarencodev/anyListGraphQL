@@ -8,6 +8,11 @@ export class CreateItemInput {
   @IsString()
   name: string;
 
+  @Field(() => String, { description: 'Category name' })
+  @IsNotEmpty()
+  @IsString()
+  category: string;
+
   /*  @Field(() => Float)
   @IsNotEmpty()
   @IsPositive()

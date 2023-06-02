@@ -10,6 +10,7 @@ type User {
   isActive: Boolean!
   lastUpdateBy: User
   items: [Item!]!
+  itemCount: Int!
 }
 
 type Item {
@@ -46,6 +47,9 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
+
+  """Ejecuta la construccion de la db"""
+  executeSeed: Boolean!
 }
 
 input SignupInput {
@@ -71,12 +75,18 @@ input UpdateUserInput {
 input CreateItemInput {
   """Product name"""
   name: String!
+
+  """Category name"""
+  category: String!
   quantityUnits: String
 }
 
 input UpdateItemInput {
   """Product name"""
   name: String
+
+  """Category name"""
+  category: String
   quantityUnits: String
   id: String!
 }

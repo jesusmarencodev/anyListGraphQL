@@ -13,7 +13,14 @@ export class ItemsService {
   ) {}
 
   async create(createItemInput: CreateItemInput, user: User): Promise<Item> {
-    return this.itemsRepository.save({ ...createItemInput, user });
+    console.log(user);
+    console.log(createItemInput);
+
+    const newItem = await this.itemsRepository.create({
+      ...createItemInput,
+      user,
+    });
+    return this.itemsRepository.save(newItem);
   }
 
   async findAll(user: User) {
@@ -52,5 +59,15 @@ export class ItemsService {
     await this.itemsRepository.remove(item);
 
     return { ...item, id };
+  }
+
+  async itemCountByUser(user: User): Promise<number> {
+    return this.itemsRepository.count({
+      where: {
+        user: {
+          id: user.id,
+        },
+      },
+    });
   }
 }
