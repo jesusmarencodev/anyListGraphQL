@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type List {
+  id: ID!
+  name: String!
+  user: User!
+}
+
 type User {
   id: ID!
   fullName: String!
@@ -10,7 +16,9 @@ type User {
   isActive: Boolean!
   lastUpdateBy: User
   itemCount: Int!
+  listCount: Int!
   items(offset: Int = 0, limit: Int = 10, search: String): [Item!]!
+  lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
 }
 
 type Item {
@@ -25,12 +33,20 @@ type AuthResponse {
   user: User!
 }
 
+type ListItem {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
 type Query {
   revalidate: AuthResponse!
   users(roles: [ValidRoles!] = [], offset: Int = 0, limit: Int = 10, search: String): [User!]!
   user(id: ID!): User!
   items(offset: Int = 0, limit: Int = 10, search: String): [Item!]!
   item(id: ID!): Item!
+  lists(offset: Int = 0, limit: Int = 10, search: String): [List!]!
+  list(id: ID!): List!
+  listItem(id: Int!): ListItem!
 }
 
 enum ValidRoles {
@@ -47,9 +63,15 @@ type Mutation {
   createItem(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!): Item!
   removeItem(id: ID!): Item!
+  createList(createListInput: CreateListInput!): List!
+  updateList(updateListInput: UpdateListInput!): List!
+  removeList(id: ID!): List!
 
   """Ejecuta la construccion de la db"""
   executeSeed: Boolean!
+  createListItem(createListItemInput: CreateListItemInput!): ListItem!
+  updateListItem(updateListItemInput: UpdateListItemInput!): ListItem!
+  removeListItem(id: Int!): ListItem!
 }
 
 input SignupInput {
@@ -89,4 +111,26 @@ input UpdateItemInput {
   category: String
   quantityUnits: String
   id: String!
+}
+
+input CreateListInput {
+  """Example field (placeholder)"""
+  name: String!
+}
+
+input UpdateListInput {
+  """Example field (placeholder)"""
+  name: String
+  id: ID!
+}
+
+input CreateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateListItemInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }
